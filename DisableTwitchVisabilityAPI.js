@@ -3,20 +3,20 @@
 // @namespace    http://tampermonkey.net/
 // @version      2024-10-29
 // @description  Disable Twitch Visability API
-// @author       You
+// @author       Jacky
 // @match        https://www.twitch.tv/*
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
-    document.addEventListener('visibilitychange', function(e) {
+    document.addEventListener('visibilitychange', function (e) {
         e.stopImmediatePropagation();
     }, true);
 
     Object.defineProperty(document, 'visibilityState', {
-        get: function() {
+        get: function () {
             return "visible";
         }
     });
