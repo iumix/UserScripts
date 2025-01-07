@@ -2,7 +2,7 @@
 // @name         Download Files as ZIP from Directory Listing
 // @author       Jacky
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Download all files from a directory listing as a ZIP archive, recursively or just the visible files (no subfolders).
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
@@ -16,6 +16,17 @@
 
 (function () {
     'use strict';
+    const blacklist = ["thumbs.db", ".ds_store"];
+    const downloadTimeLabel = 'Time taken to download';
+
+    // Sleep time in seconds
+    const sleepTime = 2;
+    // Sleep interval in number of files
+    const sleepInterval = 20;
+
+    function isBlacklisted(fileUrl) {
+        return (blacklist.some(b => fileUrl.toLowerCase().includes(b)));
+    }
 
     function isValidLink(href) {
         if (!href) return false;
@@ -33,24 +44,19 @@
 
     async function isDirectoryIndex(url) {
         try {
-            // Fetch the page content
             const response = await fetch(url, { method: 'GET' });
 
-            // Ensure the response is okay
             if (!response.ok) {
                 console.error(`HTTP error: ${response.status}`);
                 return false;
             }
 
-            // Parse the response as text
             const html = await response.text();
 
-            // Simple checks for common directory index patterns
-            const isApacheIndex = html.includes("Index of /"); // Common Apache pattern
-            const hasFileLinks = /<a href="[^"]+">[^<]+<\/a>/g.test(html); // Checks for links
+            const isApacheIndex = html.includes("Index of /");
+            const hasFileLinks = /<a href="[^"]+">[^<]+<\/a>/g.test(html);
             const hasDirectoryStructure = /Name<\/th>.*Last modified<\/th>.*Size<\/th>/s.test(html); // Apache table
 
-            // Return true if any of these patterns match
             return isApacheIndex || (hasFileLinks && hasDirectoryStructure);
         } catch (error) {
             console.error("Error while checking for directory index:", error);
@@ -146,23 +152,40 @@
         }
 
         console.log('Preparing to zip files with structure:', fileEntries);
+        console.log('Current Settings:', { blacklist: blacklist, sleep: { time: sleepTime, interval: sleepInterval } });
 
         try {
-
             const writer = new zip.ZipWriter(new zip.BlobWriter("application/zip"));
+            console.log('Creating ZIP...');
 
             let successCount = 0;
             let failCount = 0;
+            let skipList = [];
 
             for (const entry of fileEntries) {
+                if (successCount % sleepInterval === 0 && successCount > 0) {
+                    console.log(`Sleeping for ${sleepTime} seconds to avoid rate limiting...`);
+                    await new Promise(resolve => setTimeout(resolve, sleepTime * 1000));
+                }
+
                 try {
-                    console.log(`Fetching blob for: ${entry.url}`);
+                    if (isBlacklisted(entry.url)) {
+                        console.warn(`Skipping blacklisted file: ${entry.url} matched with ${entry.url.split('/').pop().toLowerCase()} in blacklist`);
+                        skipList.push(entry.url.split('/').pop());
+                        continue;
+                    }
+
+                    console.log(`Fetching: ${new URL(entry.url).pathname}`);
                     const blob = await fetchFileAsBlob(entry.url);
 
                     await writer.add(entry.relativePath, new zip.BlobReader(blob));
                     successCount++;
-                    console.log(`Added to ZIP: ${entry.relativePath}`);
+                    // console.log(`Added to ZIP: ${entry.relativePath}`);
                 } catch (e) {
+                    if (e.message.includes('blacklisted')) {
+                        skipList.push(entry.url.split('/').pop());
+                        continue;
+                    }
                     console.error(`Failed to process ${entry.url}:`, e);
                     failCount++;
                 }
@@ -174,10 +197,11 @@
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const zipFileName = `downloads-${timestamp}.zip`;
 
-            console.log(`Initiating download for: ${zipFileName}`);
+            console.log(`Downloading ZIP as: ${zipFileName}`);
             saveAs(zipBlob, zipFileName);
 
-            const msg = `Download finished!\nSuccess: ${successCount}\nFailed: ${failCount}`;
+            const msg = `Download finished!\nSuccess: ${successCount}\nSkipped: ${skipList.length} ${skipList.length > 0 ? `[${skipList.join(', ')}]` : ""}\nFailed: ${failCount}`;
+            console.timeEnd(downloadTimeLabel);
             console.log(msg);
         } catch (err) {
             console.error('Error while creating ZIP:', err);
@@ -191,6 +215,8 @@
             alert('This page does not seem to be a directory index!');
             return;
         }
+
+        console.time(downloadTimeLabel);
 
         const currentLinks = [];
         document.querySelectorAll('a[href]').forEach(linkEl => {
@@ -223,6 +249,8 @@
             alert('This page does not seem to be a directory index!');
             return;
         }
+
+        console.time(downloadTimeLabel);
 
         let baseUrl = window.location.href;
         if (!baseUrl.endsWith('/')) {
