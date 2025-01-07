@@ -5,6 +5,7 @@
 // @description  Intercept API response and process data
 // @author       Jacky
 // @match        https://lihkg.com/*
+// @downloadURL  https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/LIHKGShowHiddenVote.js
 // @updateURL    https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/LIHKGShowHiddenVote.js
 // @grant        none
 // @run-at       document-start

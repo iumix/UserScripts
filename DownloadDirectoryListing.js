@@ -11,6 +11,7 @@
 // @connect      *
 // @require      https://cdn.jsdelivr.net/npm/@zip.js/zip.js/dist/zip.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
+// @downloadURL  https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/DownloadDirectoryListing.js
 // @updateURL    https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/DownloadDirectoryListing.js
 // @run-at       document-end
 // ==/UserScript==
