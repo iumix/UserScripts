@@ -31,6 +31,33 @@
         return href.endsWith('/');
     }
 
+    async function isDirectoryIndex(url) {
+        try {
+            // Fetch the page content
+            const response = await fetch(url, { method: 'GET' });
+
+            // Ensure the response is okay
+            if (!response.ok) {
+                console.error(`HTTP error: ${response.status}`);
+                return false;
+            }
+
+            // Parse the response as text
+            const html = await response.text();
+
+            // Simple checks for common directory index patterns
+            const isApacheIndex = html.includes("Index of /"); // Common Apache pattern
+            const hasFileLinks = /<a href="[^"]+">[^<]+<\/a>/g.test(html); // Checks for links
+            const hasDirectoryStructure = /Name<\/th>.*Last modified<\/th>.*Size<\/th>/s.test(html); // Apache table
+
+            // Return true if any of these patterns match
+            return isApacheIndex || (hasFileLinks && hasDirectoryStructure);
+        } catch (error) {
+            console.error("Error while checking for directory index:", error);
+            return false;
+        }
+    }
+
     async function getAllFileLinksRecursively(currentUrl, basePath, visited = new Set()) {
         const results = [];
 
@@ -159,6 +186,12 @@
     }
 
     GM_registerMenuCommand('Download All Visible Files as ZIP', async () => {
+        const isIndex = await isDirectoryIndex(window.location.href);
+        if (!isIndex) {
+            alert('This page does not seem to be a directory index!');
+            return;
+        }
+
         const currentLinks = [];
         document.querySelectorAll('a[href]').forEach(linkEl => {
             const href = linkEl.getAttribute('href');
@@ -185,6 +218,12 @@
     });
 
     GM_registerMenuCommand('Download All Files Recursively as ZIP', async () => {
+        const isIndex = await isDirectoryIndex(window.location.href);
+        if (!isIndex) {
+            alert('This page does not seem to be a directory index!');
+            return;
+        }
+
         let baseUrl = window.location.href;
         if (!baseUrl.endsWith('/')) {
             baseUrl += '/';
