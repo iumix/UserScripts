@@ -4,6 +4,7 @@
 // @version      2024-10-29
 // @description  Disable Twitch Visability API
 // @author       Jacky
+// @version      1.0.1
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableTwitchVisabilityAPI.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableTwitchVisabilityAPI.js
 // @match        https://www.twitch.tv/*
