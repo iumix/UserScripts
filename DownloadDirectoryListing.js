@@ -11,8 +11,8 @@
 // @connect      *
 // @require      https://cdn.jsdelivr.net/npm/@zip.js/zip.js/dist/zip.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
-// @downloadURL  https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/DownloadDirectoryListing.js
-// @updateURL    https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/DownloadDirectoryListing.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DownloadDirectoryListing.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DownloadDirectoryListing.js
 // @run-at       document-end
 // ==/UserScript==
 
@@ -36,8 +36,7 @@
         if (href.startsWith('#')) return false;
         if (href.startsWith('javascript:')) return false;
         if (href.startsWith('mailto:')) return false;
-        if (href.startsWith('tel:')) return false;
-        return true;
+        return !href.startsWith('tel:');
     }
 
     function isDirectoryLink(href) {

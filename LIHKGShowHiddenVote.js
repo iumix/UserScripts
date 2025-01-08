@@ -5,8 +5,8 @@
 // @description  Intercept API response and process data
 // @author       Jacky
 // @match        https://lihkg.com/*
-// @downloadURL  https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/LIHKGShowHiddenVote.js
-// @updateURL    https://gitfront.io/r/iumix/s5LkYopy38K3/UserScripts/raw/LIHKGShowHiddenVote.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
@@ -32,13 +32,11 @@
 
         traverseAndModify(json);
 
-        const modifiedResponse = new Response(JSON.stringify(json), {
+        return new Response(JSON.stringify(json), {
             status: response.status,
             statusText: response.statusText,
             headers: response.headers
         });
-
-        return modifiedResponse;
     };
 
     const originalFetch = window.fetch;
