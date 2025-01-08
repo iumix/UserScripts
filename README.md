@@ -24,6 +24,11 @@ recursive to download all files in subdirectories.
 Self-explanatory, show hidden votes on LIHKG. Doesn't work all the time because I wrote this so badly, maybe I'll fix it
 someday (hopefully).
 
+---
+
+### CopyToFixupX
+Modify all copy links on twitter (x.com) to (fixupx.com) to allow preview on discord.
+
 ## Usage
 
 Just install the script by pasting or dragging the file to the dashboard of Tampermonkey.
