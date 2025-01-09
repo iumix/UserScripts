@@ -29,6 +29,11 @@ someday (hopefully).
 ### CopyToFixupX
 Modify all copy links on twitter (x.com) to (fixupx.com) to allow preview on discord.
 
+---
+
+### Disable Console Clear
+Disable the console clear function, useful for debugging. Call `restoreConsoleClear()` to restore the function.
+
 ## Usage
 
 Just install the script by pasting or dragging the file to the dashboard of Tampermonkey.
