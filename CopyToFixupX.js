@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @description  try to take over the world!
 // @author       Jacky
 // @match        https://x.com/*
@@ -17,6 +17,7 @@
 
     console.log('[Copy to Fixup X] Script loaded');
 
+    const replaceHost = "https://fixupx.com/";
     const allowedHosts = ['x.com', 'twitter.com'];
     const regex = new RegExp(`https://(${allowedHosts.join('|')})/.*`);
 
@@ -48,12 +49,13 @@
     }
 
     document.addEventListener('copy', () => {
+        // console.log("new copy detected");
         const clipText = window.getSelection().toString();
         if (clipText !== prevClipText) {
             prevClipText = clipText;
             if (regex.test(clipText) && !clipText.includes('fixupx.com')) {
                 let url = new URL(clipText);
-                let newUrl = new URL('https://fixupx.com/');
+                let newUrl = new URL(replaceHost);
                 newUrl.pathname = url.pathname;
                 newUrl.search = url.search;
                 newUrl.hash = url.hash;
