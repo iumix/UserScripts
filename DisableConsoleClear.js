@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Disable Console Clear
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @description  Jacky
 // @author       You
 // @match        *://*/*
@@ -15,12 +15,12 @@
 (function() {
     'use strict';
 
-    const orgClear = console.clear;
+    const originalClear = console.clear;
     console.clear = () => {
         console.log('[Disable Console Clear] Clearing console is disabled, call `restoreConsoleClear()` to restore');
     }
 
     window.restoreConsoleClear = () => {
-        console.clear = orgClear;
+        console.clear = originalClear;
     }
 })();

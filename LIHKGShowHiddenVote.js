@@ -44,9 +44,10 @@
 
         const isThreadApi = /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/.test(url);
         const isCategoryApi = /\/api_v2\/thread\/category\?cat_id=\d+/.test(url);
+        const isLatestApi = /\/api_v2\/thread\/latest\?cat_id=\d+/.test(url);
         const isQuotesApi = /\/api_v2\/thread\/\d+\/[a-f0-9]+\/quotes\/page\/\d+/.test(url);
 
-        if (!isThreadApi && !isCategoryApi && !isQuotesApi) {
+        if (!isThreadApi && !isCategoryApi && !isQuotesApi && !isLatestApi) {
             return originalSend.apply(this, arguments);
         }
 
