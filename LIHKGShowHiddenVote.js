@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.0.1
 // @description  Intercept API response and process data
 // @author       Jacky
 // @match        https://lihkg.com/*
