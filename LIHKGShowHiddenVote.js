@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      2.0
 // @description  Intercept API response and process data
 // @author       Jacky
 // @match        https://lihkg.com/*
+// @match        https://*.lihkg.com/*
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.js
 // @grant        none
@@ -14,92 +15,103 @@
 (function () {
     'use strict';
 
-    const modifyFetchResponse = async (response) => {
-        const clonedResponse = response.clone();
-        const json = await clonedResponse.json();
+    console.log('[LIHKG Show Hidden Vote] Script loaded');
 
-        const traverseAndModify = (obj) => {
-            for (const key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    if (key === 'display_vote') {
-                        obj[key] = true;
-                    } else if (typeof obj[key] === 'object') {
-                        traverseAndModify(obj[key]);
+    const originalOpen = XMLHttpRequest.prototype.open;
+    const originalSend = XMLHttpRequest.prototype.send;
+    const originalSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
+
+    XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+
+        this._url = url;
+
+        return originalOpen.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.setRequestHeader = function (header, value) {
+
+        if (!this._headers) {
+            this._headers = {};
+        }
+
+        this._headers[header] = value;
+
+        return originalSetRequestHeader.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.send = function (data) {
+        const url = this._url;
+
+        const isThreadApi = /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/.test(url);
+        const isCategoryApi = /\/api_v2\/thread\/category\?cat_id=\d+/.test(url);
+        const isQuotesApi = /\/api_v2\/thread\/\d+\/[a-f0-9]+\/quotes\/page\/\d+/.test(url);
+
+        if (!isThreadApi && !isCategoryApi && !isQuotesApi) {
+            return originalSend.apply(this, arguments);
+        }
+
+        console.log('[LIHKG Show Hidden Vote] Intercepting API call:', url);
+
+        const originalOnReadyStateChange = this.onreadystatechange;
+
+        this.onreadystatechange = function () {
+
+            if (this.readyState === 4) {
+                try {
+
+                    if (this.status >= 200 && this.status < 300) {
+
+                        const data = JSON.parse(this.responseText);
+
+                        processResponseData(data);
+
+                        const modifiedResponseText = JSON.stringify(data);
+
+                        Object.defineProperty(this, 'responseText', {
+                            get: function () {
+                                return modifiedResponseText;
+                            }
+                        });
+
+                        Object.defineProperty(this, 'response', {
+                            get: function () {
+                                return modifiedResponseText;
+                            }
+                        });
                     }
+                } catch (error) {
+                    console.error('[LIHKG Show Hidden Vote] Error processing response:', error);
                 }
+            }
+
+            if (originalOnReadyStateChange) {
+                originalOnReadyStateChange.apply(this, arguments);
             }
         };
 
-        traverseAndModify(json);
-
-        return new Response(JSON.stringify(json), {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers
-        });
+        return originalSend.apply(this, arguments);
     };
 
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-        const response = await originalFetch(...args);
-        const url = args[0];
-        if (url.includes('/api_v2/thread/category')) {
-            return modifyFetchResponse(response);
+    function processResponseData(data) {
+
+        if (!data || typeof data !== 'object') {
+            return;
         }
-        return response;
-    };
 
-    const traverseAndModify = (obj) => {
-        for (const key in obj) {
-            if (!obj.hasOwnProperty(key)) {
-                break;
-            }
-
-            if (key === 'display_vote') {
-                obj[key] = true;
-            } else if (typeof obj[key] === 'object') {
-                traverseAndModify(obj[key]);
-            }
-
+        if (Array.isArray(data)) {
+            data.forEach(item => processResponseData(item));
+            return;
         }
-    };
 
-    const quoteRegex = /\/api_v2\/thread\/\d+\/[\w\d]+\/quotes\//;
-    const originalXHR = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function () {
-        this.addEventListener('readystatechange', function () {
-            if (this.readyState !== 4) return;
-            if (this.responseURL.includes('/api_v2/thread/category') || this.responseURL.includes('/api_v2/thread/latest') || quoteRegex.test(this.responseURL)) {
-                const response = JSON.parse(this.responseText);
-                traverseAndModify(response);
-                Object.defineProperty(this, 'responseText', {
-                    value: JSON.stringify(response)
-                });
+        if ('display_vote' in data) {
+            data.display_vote = true;
+            console.log('[LIHKG Show Hidden Vote] Modified display_vote to true');
+        }
+
+        for (const key in data) {
+            if (data.hasOwnProperty(key) && typeof data[key] === 'object' && data[key] !== null) {
+                processResponseData(data[key]);
             }
-        });
-
-        this.addEventListener('load', function () {
-            if (this.responseURL.includes('/api_v2/thread')) {
-                const response = JSON.parse(this.responseText).response;
-                if (response && response.item_data) {
-                    response.item_data.forEach(item => {
-                        const likeLabel = document.querySelector(`label[for='${item.post_id}-like-like']`);
-                        const dislikeLabel = document.querySelector(`label[for='${item.post_id}-dislike-like']`);
-
-                        if (likeLabel && dislikeLabel) {
-                            if (likeLabel.style.display === "inline-block" && dislikeLabel.style.display === "inline-block") {
-                                return;
-                            }
-
-                            likeLabel.style.display = "inline-block";
-                            //likeLabel.style.color = "green";
-                            dislikeLabel.style.display = "inline-block";
-                            //dislikeLabel.style.color = "red";
-                        }
-                    });
-                }
-            }
-        });
-        originalXHR.apply(this, arguments);
-    };
+        }
+    }
 })();
