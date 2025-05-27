@@ -3,9 +3,6 @@
 This repository contains a collection of scripts that I have written to automate various tasks on websites. These
 scripts are intended to be used with the [Tampermonkey](https://www.tampermonkey.net/) browser extension.
 
-## DeepWiki
-[DeepWiki](https://deepwiki.com/iumix/UserScripts) is used for AI-generated wiki, idk why i include it.
-
 ## Scripts
 
 ### DisableTwitchVisabilityAPI
