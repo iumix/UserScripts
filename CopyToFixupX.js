@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
-// @description  try to take over the world!
+// @version      1.1.0
+// @description  Copy to use Fixup X Links
 // @author       Jacky
 // @match        https://x.com/*
 // @match        https://twitter.com/*
@@ -15,41 +15,79 @@
 (function () {
     'use strict';
 
-    console.log('[Copy to Fixup X] Script loaded');
-
     const replaceHost = "https://fixupx.com/";
     const allowedHosts = ['x.com', 'twitter.com'];
     const regex = new RegExp(`https://(${allowedHosts.join('|')})/.*`);
+    const logPrefix = "[Copy to Fixup X]";
 
     let prevClipText = '';
 
-    function checkRunnable() {
+    async function checkRunnable() {
         if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+            console.error(`${logPrefix} Active element is an input or textarea`);
             return false;
         }
 
         if (document.activeElement.isContentEditable) {
+            console.error(`${logPrefix} Active element is content editable`);
             return false;
         }
 
         if (!document.hasFocus()) {
+            console.error(`${logPrefix} Document is not focused`);
             return false;
         }
 
         if (!navigator.clipboard) {
-            console.error('Clipboard API not available');
+            console.error(`${logPrefix} Clipboard API not available`);
             return false;
+        }
+
+        if (window.top !== window) {
+            console.error(`${logPrefix} Window is not the top window`);
+            return false;
+        }
+
+        if (document.visibilityState !== 'visible') {
+            console.error(`${logPrefix} Document is not visible`);
+            return false
+        };
+
+        if (!allowedHosts.includes(location.hostname)) {
+            console.error(`${logPrefix} Hostname is not allowed`);
+            return false
+        };
+
+        if (!navigator.clipboard.writeText) {
+            console.error(`${logPrefix} Clipboard write text not available`);
+            return false;
+        };
+
+        if (navigator.permissions) {
+            try {
+                const { state } = await navigator.permissions.query({ name: 'clipboard-write' });
+                if (state === 'denied') {
+                    console.error(`${logPrefix} Clipboard write permission denied`);
+                    return false;
+                }
+            } catch (_) {
+                /* permission API not supported – ignore */
+                console.error(`${logPrefix} Permission API not supported`);
+                return false;
+            }
         }
 
         return true;
     }
 
     if (!checkRunnable()) {
+        console.log(`${logPrefix} Unable to activate script`);
         return;
+    } else {
+        console.log(`${logPrefix} Script loaded`);
     }
 
     document.addEventListener('copy', () => {
-        // console.log("new copy detected");
         const clipText = window.getSelection().toString();
         if (clipText !== prevClipText) {
             prevClipText = clipText;
@@ -60,7 +98,7 @@
                 newUrl.search = url.search;
                 newUrl.hash = url.hash;
                 navigator.clipboard.writeText(newUrl.href).then(() => {
-                    console.log('[Copy to Fixup X] Copied to clipboard:', newUrl.href);
+                    console.log(`${logPrefix} Copied to clipboard: ${newUrl.href}`);
                 });
             }
         }
