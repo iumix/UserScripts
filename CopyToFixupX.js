@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @description  Copy to use Fixup X Links
 // @author       Jacky
 // @match        https://x.com/*
@@ -92,6 +92,7 @@
         if (clipText !== prevClipText) {
             prevClipText = clipText;
             if (regex.test(clipText) && !clipText.includes('fixupx.com')) {
+                event.preventDefault();
                 let url = new URL(clipText);
                 let newUrl = new URL(replaceHost);
                 newUrl.pathname = url.pathname;
