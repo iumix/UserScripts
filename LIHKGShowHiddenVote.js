@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.0.1
+// @version      2.0.2
 // @description  Intercept API response and process data
 // @author       Jacky
 // @match        https://lihkg.com/*
@@ -45,7 +45,7 @@
         const isThreadApi = /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/.test(url);
         const isCategoryApi = /\/api_v2\/thread\/category\?cat_id=\d+/.test(url);
         const isLatestApi = /\/api_v2\/thread\/latest\?cat_id=\d+/.test(url);
-        const isQuotesApi = /\/api_v2\/thread\/\d+\/[a-f0-9]+\/quotes\/page\/\d+/.test(url);
+        const isQuotesApi = /\/api_v2\/thread\/\d+\/[a-fA-F0-9]+\/quotes\/page\/\d+/.test(url);
 
         if (!isThreadApi && !isCategoryApi && !isQuotesApi && !isLatestApi) {
             return originalSend.apply(this, arguments);
