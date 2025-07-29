@@ -2,7 +2,7 @@
 // @name         Download Files as ZIP from Directory Listing
 // @author       Jacky
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @description  Download all files from a directory listing as a ZIP archive, recursively or just the visible files (no subfolders).
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
@@ -18,7 +18,7 @@
 
 (function () {
     'use strict';
-    const blacklist = ["thumbs.db", ".ds_store"];
+    const blacklist = ["thumbs.db", ".ds_store", "http-server"];
     const downloadTimeLabel = 'Time taken to download';
 
     // Sleep time in seconds
