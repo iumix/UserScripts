@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.0.2
+// @version      2.0.3
 // @description  Intercept API response and process data
 // @author       Jacky
 // @match        https://lihkg.com/*
@@ -39,15 +39,21 @@
         return originalSetRequestHeader.apply(this, arguments);
     };
 
+    const matchTargetApi = (url) => {
+        const rules = [
+            /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/,
+            /\/api_v2\/thread\/category\?cat_id=\d+/,
+            /\/api_v2\/thread\/latest\?cat_id=\d+/,
+            /\/api_v2\/thread\/\d+\/[a-fA-F0-9]+\/quotes\/page\/\d+/
+        ]
+
+        return rules.some(rule => rule.test(url));
+    }
+
     XMLHttpRequest.prototype.send = function (data) {
         const url = this._url;
 
-        const isThreadApi = /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/.test(url);
-        const isCategoryApi = /\/api_v2\/thread\/category\?cat_id=\d+/.test(url);
-        const isLatestApi = /\/api_v2\/thread\/latest\?cat_id=\d+/.test(url);
-        const isQuotesApi = /\/api_v2\/thread\/\d+\/[a-fA-F0-9]+\/quotes\/page\/\d+/.test(url);
-
-        if (!isThreadApi && !isCategoryApi && !isQuotesApi && !isLatestApi) {
+        if (!matchTargetApi(url)) {
             return originalSend.apply(this, arguments);
         }
 
