@@ -45,4 +45,5 @@ damage. Use at your own risk.
 
 ## License
 
-No license, do whatever you want with it. Please don't sue me.
+MIT License.
+Use it however you want, do anything with it, modify it.
