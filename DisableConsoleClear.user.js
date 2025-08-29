@@ -5,7 +5,6 @@
 // @description  Disable Console Clear
 // @author       iumix
 // @match        *://*/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=lihkg.com
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableConsoleClear.user.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableConsoleClear.user.js
 // @grant        none
