@@ -2,10 +2,10 @@
 // @name         Disable Twitch Visability API
 // @namespace    http://tampermonkey.net/
 // @description  Disable Twitch Visability API
-// @author       Jacky
-// @version      1.0.1
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableTwitchVisabilityAPI.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableTwitchVisabilityAPI.js
+// @author       iumix
+// @version      1.0.2
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableTwitchVisabilityAPI.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableTwitchVisabilityAPI.user.js
 // @match        https://www.twitch.tv/*
 // @grant        none
 // ==/UserScript==

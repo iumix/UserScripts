@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.0.3
+// @version      2.0.4
 // @description  Intercept API response and process data
-// @author       Jacky
+// @author       iumix
 // @match        https://lihkg.com/*
 // @match        https://*.lihkg.com/*
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.user.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==

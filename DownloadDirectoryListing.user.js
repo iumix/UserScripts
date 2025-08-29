@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Download Files as ZIP from Directory Listing
-// @author       Jacky
+// @author       iumix
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
+// @version      1.1.3
 // @description  Download all files from a directory listing as a ZIP archive, recursively or just the visible files (no subfolders).
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
@@ -11,8 +11,8 @@
 // @connect      *
 // @require      https://cdn.jsdelivr.net/npm/@zip.js/zip.js/dist/zip.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DownloadDirectoryListing.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DownloadDirectoryListing.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DownloadDirectoryListing.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DownloadDirectoryListing.user.js
 // @run-at       document-end
 // ==/UserScript==
 

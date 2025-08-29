@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @description  Copy to use Fixup X Links
-// @author       Jacky
+// @author       iumix
 // @match        https://x.com/*
 // @match        https://twitter.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=x.com
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/CopyToFixupX.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/CopyToFixupX.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/CopyToFixupX.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/CopyToFixupX.user.js
 // @grant        none
 // ==/UserScript==
 
