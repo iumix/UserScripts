@@ -36,7 +36,7 @@ Disable the console clear function, useful for debugging. Call `restoreConsoleCl
 
 ## Usage
 
-Just install the script by pasting or dragging the file to the dashboard of Tampermonkey.
+Go to the script's page on GitHub, click the "Raw" button to initiate the installation.
 
 ## Disclaimer
 
