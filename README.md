@@ -5,38 +5,47 @@ scripts are intended to be used with the [Tampermonkey](https://www.tampermonkey
 
 ## Scripts
 
-### DisableTwitchVisabilityAPI
+<details>
+  <summary>DisableTwitchVisabilityAPI</summary>
 
 This script disables the Twitch Visibility API, which is used to determine if a user is currently watching a stream.
 This can be useful for streamers who want to appear offline while watching other streams.
 
----
+</details>
 
-### DownloadDirectoryListing
+<details>
+  <summary>DownloadDirectoryListing</summary>
 
 Download all files from an index page like Apache directory listing, can be a list of files on the page or can be
 recursive to download all files in subdirectories.
 
----
+</details>
 
-### LIHKGShowHiddenVotes
+<details>
+  <summary>LIHKGShowHiddenVotes</summary>
 
 Self-explanatory, show hidden votes on LIHKG. Doesn't work all the time because I wrote this so badly, maybe I'll fix it
 someday (hopefully).
 
----
+</details>
 
-### CopyToFixupX
+<details>
+  <summary>CopyToFixupX</summary>
+
 Modify all copy links on twitter (x.com) to (fixupx.com) to allow preview on discord.
 
----
+</details>
 
-### Disable Console Clear
+<details>
+  <summary>Disable Console Clear</summary>
+
 Disable the console clear function, useful for debugging. Call `restoreConsoleClear()` to restore the function.
+
+</details>
 
 ## Usage
 
-Go to the script's page on GitHub, click the "Raw" button to initiate the installation.
+Go to the script's page on GitHub, click the "Raw" button to initi
 
 ## Disclaimer
 
