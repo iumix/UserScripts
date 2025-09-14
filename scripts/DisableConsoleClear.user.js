@@ -5,8 +5,8 @@
 // @description  Disable Console Clear
 // @author       iumix
 // @match        *://*/*
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableConsoleClear.user.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/DisableConsoleClear.user.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/DisableConsoleClear.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/DisableConsoleClear.user.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==

@@ -7,8 +7,8 @@
 // @match        https://x.com/*
 // @match        https://twitter.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=x.com
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/CopyToFixupX.user.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/CopyToFixupX.user.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/CopyToFixupX.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/CopyToFixupX.user.js
 // @grant        none
 // ==/UserScript==
 

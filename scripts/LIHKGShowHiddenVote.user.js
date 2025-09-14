@@ -6,8 +6,8 @@
 // @author       iumix
 // @match        https://lihkg.com/*
 // @match        https://*.lihkg.com/*
-// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.user.js
-// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/refs/heads/main/LIHKGShowHiddenVote.user.js
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/LIHKGShowHiddenVote.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/LIHKGShowHiddenVote.user.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
