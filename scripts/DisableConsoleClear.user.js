@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Disable Console Clear
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.3
 // @description  Disable Console Clear
 // @author       iumix
 // @match        *://*/*

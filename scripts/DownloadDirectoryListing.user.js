@@ -2,7 +2,7 @@
 // @name         Download Files as ZIP from Directory Listing
 // @author       iumix
 // @namespace    http://tampermonkey.net/
-// @version      1.1.3
+// @version      1.1.4
 // @description  Download all files from a directory listing as a ZIP archive, recursively or just the visible files (no subfolders).
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
