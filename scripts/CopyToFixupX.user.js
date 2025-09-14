@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      1.2.1
+// @version      1.2.2
 // @description  Copy to use Fixup X Links
 // @author       iumix
 // @match        https://x.com/*
@@ -15,16 +15,13 @@
 (async function () {
     'use strict';
 
-    const replaceHost = "https://fixupx.com/";
-    const allowedHosts = ['x.com', 'twitter.com'];
     const logPrefix = "[Copy to Fixup X]";
 
-    let prevClipText = '';
-
+    const replaceHost = "https://fixupx.com/";
+    const allowedHosts = ['x.com', 'twitter.com'];
     const _hostsPattern = allowedHosts.map(h => h.replace(/\./g, '\\.')).join('|');
     const _writeTextMatch = new RegExp(`^(?:https?:\\/\\/)?(?:${_hostsPattern})\\/.*`, 'i');
 
-    // Actual rewrite function
     function rewriteToFixup(text) {
         const input = String(text || '').trim();
         if (!input) return null;
@@ -95,50 +92,12 @@
         return true;
     }
 
-    // Main logic
-    const logic = (event) => {
-        const clipText = (window.getSelection && window.getSelection().toString()) || '';
-        const rewritten = rewriteToFixup(clipText);
-        if (clipText !== prevClipText) {
-            prevClipText = clipText;
-            if (rewritten) {
-                if (event && event.clipboardData) {
-                    try {
-                        event.clipboardData.setData('text/plain', rewritten);
-                        event.preventDefault();
-                        console.log(`${logPrefix} Copied to clipboard: ${rewritten}`);
-                    } catch (_) { /* ignore */ }
-                } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                    try {
-                        navigator.clipboard.writeText(rewritten).then(() => {
-                            console.log(`${logPrefix} Copied to clipboard: ${rewritten}`);
-                        });
-                    } catch (_) { /* ignore */ }
-                }
-            }
-        }
-    }
-
     // Check if the script can run
     if (!(await checkRunnable())) {
         console.log(`${logPrefix} Unable to activate script`);
         return;
     } else {
         console.log(`${logPrefix} Script loaded`);
-    }
-
-
-    // Rewrite the clipboard text to fixupx.com
-    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-        const originalWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
-        navigator.clipboard.writeText = async function (text) {
-            try {
-                const rewritten = rewriteToFixup(text);
-                return await originalWriteText(rewritten ?? text);
-            } catch (_) {
-                return originalWriteText(text);
-            }
-        };
     }
 
     // Override execCommand('copy') to rewrite the clipboard text
@@ -170,8 +129,4 @@
             return originalExecCommand(commandId, showUI, value);
         };
     }
-
-    document.addEventListener('DOMContentLoaded', event => logic(event));
-    document.addEventListener('copy', event => logic(event));
-    document.addEventListener('focus', event => logic(event));
 })();
