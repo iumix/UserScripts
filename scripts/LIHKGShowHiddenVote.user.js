@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.0.5
+// @version      2.0.6
 // @description  Intercept API response and process data
 // @author       iumix
 // @match        https://lihkg.com/*
@@ -22,14 +22,11 @@
     const originalSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
 
     XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
-
         this._url = url;
-
         return originalOpen.apply(this, arguments);
     };
 
     XMLHttpRequest.prototype.setRequestHeader = function (header, value) {
-
         if (!this._headers) {
             this._headers = {};
         }
@@ -62,14 +59,10 @@
         const originalOnReadyStateChange = this.onreadystatechange;
 
         this.onreadystatechange = function () {
-
             if (this.readyState === 4) {
                 try {
-
                     if (this.status >= 200 && this.status < 300) {
-
                         const data = JSON.parse(this.responseText);
-
                         processResponseData(data);
 
                         const modifiedResponseText = JSON.stringify(data);
@@ -100,7 +93,6 @@
     };
 
     function processResponseData(data) {
-
         if (!data || typeof data !== 'object') {
             return;
         }
