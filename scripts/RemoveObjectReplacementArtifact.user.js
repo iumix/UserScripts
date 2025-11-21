@@ -6,6 +6,8 @@
 // @author       iumix
 // @match        *://*/*
 // @grant        none
+// @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/RemoveObjectReplacementArtifact.user.js
+// @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/RemoveObjectReplacementArtifact.user.js
 // @run-at       document-idle
 // ==/UserScript==
 
