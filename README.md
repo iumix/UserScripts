@@ -6,10 +6,9 @@ scripts are intended to be used with the [Tampermonkey](https://www.tampermonkey
 ## Scripts
 
 <details>
-  <summary>DisableTwitchVisabilityAPI</summary>
+  <summary>DisableWebVisibilityAPI</summary>
 
-This script disables the Twitch Visibility API, which is used to determine if a user is currently watching a stream.
-This can be useful for streamers who want to appear offline while watching other streams.
+This script disables the Web Visibility API, which is used to determine if a user is currently focus on the page.
 
 </details>
 
