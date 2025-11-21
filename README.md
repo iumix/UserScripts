@@ -43,6 +43,12 @@ Disable the console clear function, useful for debugging. Call `restoreConsoleCl
 
 </details>
 
+<details>
+  <summary>Remove Object Replacement Artifact</summary>
+
+Remove the `￼` artifact produced on iPhone voice input
+</details>
+
 ## Usage
 
 Go to the script's page on GitHub, click the "Raw" button to initi
