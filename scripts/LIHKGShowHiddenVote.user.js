@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.0.6
+// @version      2.1.0
 // @description  Intercept API response and process data
 // @author       iumix
 // @match        https://lihkg.com/*
@@ -63,6 +63,7 @@
                 try {
                     if (this.status >= 200 && this.status < 300) {
                         const data = JSON.parse(this.responseText);
+
                         processResponseData(data);
 
                         const modifiedResponseText = JSON.stringify(data);
@@ -92,25 +93,33 @@
         return originalSend.apply(this, arguments);
     };
 
-    function processResponseData(data) {
-        if (!data || typeof data !== 'object') {
-            return;
-        }
+    function processResponseDataOptimized(root, keyName = 'display_vote') {
+        const stack = [root];
 
-        if (Array.isArray(data)) {
-            data.forEach(item => processResponseData(item));
-            return;
-        }
+        while (stack.length > 0) {
+            const node = stack.pop();
+            if (!node || typeof node !== 'object') continue;
 
-        if ('display_vote' in data) {
-            data.display_vote = true;
-            console.log('[LIHKG Show Hidden Vote] Modified display_vote to true');
-        }
+            if (Array.isArray(node)) {
+                for (let i = 0; i < node.length; i++) {
+                    if (node[i] && typeof node[i] === 'object') {
+                        stack.push(node[i]);
+                    }
+                }
+            } else {
+                for (const key in node) {
+                    if (key === keyName && node[key] === false) {
+                        node[key] = true;
+                        console.log('[LIHKG Show Hidden Vote] Modified', keyName, 'to true');
+                    }
 
-        for (const key in data) {
-            if (data.hasOwnProperty(key) && typeof data[key] === 'object' && data[key] !== null) {
-                processResponseData(data[key]);
+                    if (node[key] !== null && typeof node[key] === 'object') {
+                        stack.push(node[key]);
+                    }
+                }
             }
         }
+
+        return root;
     }
 })();
