@@ -93,7 +93,7 @@
         return originalSend.apply(this, arguments);
     };
 
-    function processResponseDataOptimized(root, keyName = 'display_vote') {
+    function processResponseData(root, keyName = 'display_vote') {
         const stack = [root];
 
         while (stack.length > 0) {
