@@ -48,6 +48,12 @@ Disable the console clear function, useful for debugging. Call `restoreConsoleCl
 Remove the `￼` artifact produced on iPhone voice input
 </details>
 
+<details>
+  <summary>Force Twitter Image High Quality</summary>
+  
+Force Twitter to load images in the highest quality available.
+</details>
+
 ## Usage
 
 Go to the script's page on GitHub, click the "Raw" button to initi
