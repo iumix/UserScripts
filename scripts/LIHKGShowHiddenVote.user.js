@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.1.1
+// @version      2.1.2
 // @description  Intercept API response and process data
 // @author       iumix
 // @match        https://lihkg.com/*
@@ -37,12 +37,14 @@
     };
 
     const matchTargetApi = (url) => {
-        const rules = [
-            /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/,
-            /\/api_v2\/thread\/category\?cat_id=\d+/,
-            /\/api_v2\/thread\/latest\?cat_id=\d+/,
-            /\/api_v2\/thread\/\d+\/[a-fA-F0-9]+\/quotes\/page\/\d+/
-        ]
+        // const rules = [
+        //     /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/,
+        //     /\/api_v2\/thread\/category\?cat_id=\d+/,
+        //     /\/api_v2\/thread\/latest\?cat_id=\d+/,
+        //     /\/api_v2\/thread\/\d+\/[a-fA-F0-9]+\/quotes\/page\/\d+/
+        // ]
+
+        const rules = [/\/api_v2\//]
 
         return rules.some(rule => rule.test(url));
     }
