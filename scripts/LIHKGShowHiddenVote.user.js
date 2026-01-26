@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LIHKG Show Hidden Vote
 // @namespace    http://tampermonkey.net/
-// @version      2.1.2
+// @version      2.2.0
 // @description  Intercept API response and process data
 // @author       iumix
 // @match        https://lihkg.com/*
@@ -36,27 +36,13 @@
         return originalSetRequestHeader.apply(this, arguments);
     };
 
-    const matchTargetApi = (url) => {
-        // const rules = [
-        //     /\/api_v2\/thread\/\d+(\/?$|\/page\/\d+)/,
-        //     /\/api_v2\/thread\/category\?cat_id=\d+/,
-        //     /\/api_v2\/thread\/latest\?cat_id=\d+/,
-        //     /\/api_v2\/thread\/\d+\/[a-fA-F0-9]+\/quotes\/page\/\d+/
-        // ]
-
-        const rules = [/\/api_v2\//]
-
-        return rules.some(rule => rule.test(url));
-    }
-
     XMLHttpRequest.prototype.send = function (data) {
         const url = this._url;
+        const regexp = /\/api_v2\//;
 
-        if (!matchTargetApi(url)) {
+        if (!regexp.test(url)) {
             return originalSend.apply(this, arguments);
         }
-
-        console.log('[LIHKG Show Hidden Vote] Intercepting API call:', url);
 
         const originalOnReadyStateChange = this.onreadystatechange;
 
@@ -97,31 +83,29 @@
 
     function processResponseData(root, keyName = 'display_vote') {
         const stack = [root];
+        const seen = new WeakSet();
 
-        while (stack.length > 0) {
+        while (stack.length) {
             const node = stack.pop();
             if (!node || typeof node !== 'object') continue;
 
+            if (seen.has(node)) continue;
+            seen.add(node);
+
             if (Array.isArray(node)) {
-                for (let i = 0; i < node.length; i++) {
-                    if (node[i] && typeof node[i] === 'object') {
-                        stack.push(node[i]);
-                    }
+                for (const item of node) {
+                    if (item && typeof item === 'object') stack.push(item);
                 }
             } else {
                 for (const key in node) {
                     if (key === keyName && node[key] === false) {
                         node[key] = true;
-                        console.log('[LIHKG Show Hidden Vote] Modified', keyName, 'to true');
                     }
-
-                    if (node[key] !== null && typeof node[key] === 'object') {
-                        stack.push(node[key]);
-                    }
+                    const v = node[key];
+                    if (v && typeof v === 'object') stack.push(v);
                 }
             }
         }
-
         return root;
     }
 })();
