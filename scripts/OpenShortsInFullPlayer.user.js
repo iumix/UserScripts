@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Open Shorts in Full Player
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @description  Adds a button to open YouTube Shorts in the full video player
 // @author       iumix
 // @match        https://www.youtube.com/shorts/*
@@ -42,7 +42,7 @@
 
     host.querySelector('button').addEventListener('click', () => {
       const id = location.pathname.split('/').pop();
-      location.href = `https://www.youtube.com/watch?v=${id}`;
+      window.open(`https://www.youtube.com/watch?v=${id}`, '_blank');
     });
 
     return host;
