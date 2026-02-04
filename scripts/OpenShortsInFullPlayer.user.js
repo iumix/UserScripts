@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Open Shorts in Full Player
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.2.0
 // @description  Adds a button to open YouTube Shorts in the full video player
 // @author       iumix
 // @match        https://www.youtube.com/*
@@ -10,14 +10,11 @@
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/OpenShortsInFullPlayer.user.js
 // @grant        none
 // ==/UserScript==
-
 (function () {
   'use strict';
-
   function createButton() {
     const host = document.createElement('button-view-model');
     host.className = 'ytSpecButtonViewModelHost';
-
     host.innerHTML = `
 <label class="yt-spec-button-shape-with-label">
   <button
@@ -39,16 +36,16 @@
   </div>
 </label>
         `;
-
     host.querySelector('button').addEventListener('click', () => {
-      const id = location.pathname.split('/').pop();
+      const id = location
+        .pathname
+        .split('/')
+        .pop();
       window.open(`https://www.youtube.com/watch?v=${id}`, '_blank');
     });
-
     return host;
   }
-
-  const observer = new MutationObserver(() => {
+  function injectButton() {
     if (!location.pathname.startsWith('/shorts/')) return;
 
     const actionBar = document.querySelector('.ytwReelActionBarViewModelHost');
@@ -57,13 +54,38 @@
     const btn = createButton();
     btn.classList.add('tm-open-btn');
     actionBar.appendChild(btn);
-  });
+  }
+  let observer = null;
+  function startObserving() {
+    if (observer) return;
 
-  if (document.body) {
-    observer.observe(document.body, { childList: true, subtree: true });
-  } else {
-    document.addEventListener('DOMContentLoaded', () => {
-      observer.observe(document.body, { childList: true, subtree: true });
+    observer = new MutationObserver(injectButton);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
     });
+  }
+  function stopObserving() {
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+  }
+  function handleNavigation() {
+    if (location.pathname.startsWith('/shorts/')) {
+      injectButton();
+      startObserving();
+    } else {
+      stopObserving();
+    }
+  }
+  document.addEventListener('yt-navigate-finish', handleNavigation);
+  function init() {
+    handleNavigation();
+  }
+  if (document.body) {
+    init();
+  } else {
+    document.addEventListener('DOMContentLoaded', init);
   }
 })();
