@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Open Shorts in Full Player
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.1.0
 // @description  Adds a button to open YouTube Shorts in the full video player
 // @author       iumix
-// @match        https://www.youtube.com/shorts/*
+// @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/OpenShortsInFullPlayer.user.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/OpenShortsInFullPlayer.user.js
@@ -49,6 +49,8 @@
   }
 
   const observer = new MutationObserver(() => {
+    if (!location.pathname.startsWith('/shorts/')) return;
+
     const actionBar = document.querySelector('.ytwReelActionBarViewModelHost');
     if (!actionBar || actionBar.querySelector('.tm-open-btn')) return;
 
