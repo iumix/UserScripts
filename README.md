@@ -54,6 +54,12 @@ Remove the `￼` artifact produced on iPhone voice input
 Force Twitter to load images in the highest quality available.
 </details>
 
+<details>
+  <summary>Open Shorts in Full Player</summary>
+
+Adds a button to open YouTube Shorts in the full video player.
+</details>
+
 ## Usage
 
 Go to the script's page on GitHub, click the "Raw" button to initi
