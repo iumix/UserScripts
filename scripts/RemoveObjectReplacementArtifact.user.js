@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Remove Object Replacement Artifact
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @description  Removes the Obj artifact on iPhone voice input
 // @author       iumix
 // @match        *://*/*
