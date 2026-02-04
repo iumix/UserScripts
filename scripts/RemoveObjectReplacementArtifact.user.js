@@ -50,7 +50,6 @@
         mutations.forEach((mutation) => {
             if (mutation.addedNodes.length > 0) {
                 mutation.addedNodes.forEach((node) => {
-                    // Only process element and text nodes
                     if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
                         cleanNode(node);
                     }
