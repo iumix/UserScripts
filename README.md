@@ -3,71 +3,13 @@
 This repository contains a collection of scripts that I have written to automate various tasks on websites. These
 scripts are intended to be used with the [Tampermonkey](https://www.tampermonkey.net/) browser extension.
 
-## Scripts
-
-<details>
-  <summary>DisableWebVisibilityAPI</summary>
-
-This script disables the Web Visibility API, which is used to determine if a user is currently focus on the page.
-
-</details>
-
-<details>
-  <summary>DownloadDirectoryListing</summary>
-
-Download all files from an index page like Apache directory listing, can be a list of files on the page or can be
-recursive to download all files in subdirectories.
-
-</details>
-
-<details>
-  <summary>LIHKGShowHiddenVotes</summary>
-
-Self-explanatory, show hidden votes on LIHKG. Doesn't work all the time because I wrote this so badly, maybe I'll fix it
-someday (hopefully).
-
-</details>
-
-<details>
-  <summary>CopyToFixupX</summary>
-
-Modify all copy links on twitter (x.com) to (fixupx.com) to allow preview on discord.
-
-</details>
-
-<details>
-  <summary>Disable Console Clear</summary>
-
-Disable the console clear function, useful for debugging. Call `restoreConsoleClear()` to restore the function.
-
-</details>
-
-<details>
-  <summary>Remove Object Replacement Artifact</summary>
-
-Remove the `￼` artifact produced on iPhone voice input
-</details>
-
-<details>
-  <summary>Force Twitter Image High Quality</summary>
-  
-Force Twitter to load images in the highest quality available.
-</details>
-
-<details>
-  <summary>Open Shorts in Full Player</summary>
-
-Adds a button to open YouTube Shorts in the full video player.
-</details>
-
 ## Usage
 
-Go to the script's page on GitHub, click the "Raw" button to initi
+Go to the script's page on GitHub, click the "Raw" button to install.
 
 ## Disclaimer
 
-I am not responsible for any damage caused by the use of these scripts, including account bans, data loss, or any other
-damage. Use at your own risk.
+I am not responsible for any damage caused by the use of these scripts, including account bans, data loss, or any other damage. Use at your own risk.
 
 ## License
 
