@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @description  Automatically removes common spoiler blur/overlay effects as the page updates.
 // @author       iumix
-// @version      1.0.0
+// @version      1.0.1
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/DisableThreadsSpoiler.user.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/DisableThreadsSpoiler.user.js
 // @match        https://www.threads.com/*
@@ -16,13 +16,12 @@
 
     function unblurSpoilers(root = document) {
         try {
-
-            root.querySelectorAll?.("span").forEach(s => {
+            root.querySelectorAll?.("span").forEach((s) => {
                 const p = s.parentElement;
                 if (p && p.tagName === "DIV") p.style.opacity = "1";
             });
 
-            root.querySelectorAll?.("img").forEach(img => {
+            root.querySelectorAll?.("img").forEach((img) => {
                 const hasFilter =
                     img.style.filter ||
                     img.style.webkitFilter ||
@@ -36,14 +35,12 @@
                 }
             });
 
-            root.querySelectorAll?.("div > picture").forEach(pic => {
+            root.querySelectorAll?.("div > picture").forEach((pic) => {
                 const div = pic.parentElement;
                 const span = div?.querySelector("span");
                 if (span) span.remove();
             });
-        } catch (e) {
-
-        }
+        } catch (e) { }
     }
 
     let scheduled = false;
@@ -53,20 +50,25 @@
 
         requestAnimationFrame(() => {
             scheduled = false;
-
             unblurSpoilers(document);
         });
     }
 
     unblurSpoilers(document);
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => unblurSpoilers(document), { once: true });
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => unblurSpoilers(document),
+            { once: true },
+        );
     }
 
-    const observer = new MutationObserver(mutations => {
-
+    const observer = new MutationObserver((mutations) => {
         for (const m of mutations) {
-            if (m.type === "childList" && (m.addedNodes?.length || m.removedNodes?.length)) {
+            if (
+                m.type === "childList" &&
+                (m.addedNodes?.length || m.removedNodes?.length)
+            ) {
                 scheduleRun(m.target);
                 break;
             }
@@ -81,6 +83,6 @@
         subtree: true,
         childList: true,
         attributes: true,
-        attributeFilter: ["class", "style"]
+        attributeFilter: ["class", "style"],
     });
 })();
