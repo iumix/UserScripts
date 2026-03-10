@@ -5,7 +5,7 @@ scripts are intended to be used with the [Tampermonkey](https://www.tampermonkey
 
 ## Usage
 
-Go to the script's page on GitHub, click the "Raw" button to install.
+Go to the [script's page](https://github.com/iumix/UserScripts/tree/main/scripts) on GitHub, open the script you want to install, and click the "Raw" button to install.
 
 ## Disclaimer
 
