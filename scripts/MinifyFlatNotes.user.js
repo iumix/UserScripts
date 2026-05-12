@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Replace Flatnotes Logo with Home
 // @namespace    https://flatnotes.iumix.me/*
-// @version      1.0
-// @description  Removes mb-2 from the nav and replaces the SVG logo with "Home"
-// @include      /^https?:\/\/[^\/]*flatnotes[^\/]*\/.*$/
+// @version      1.1.0
+// @description  Removes unecessary logo and margins
+// @include      *flatnotes*
 // @run-at       document-idle
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/MinifyFlatNotes.user.js
@@ -13,8 +13,12 @@
 (function () {
   "use strict";
 
+  let updateQueued = false;
+
   function updateNav() {
-    const nav = document.querySelector("nav.mb-2");
+    updateQueued = false;
+
+    const nav = document.querySelector("nav");
 
     if (!nav) return;
 
@@ -29,6 +33,10 @@
     const logoContainer = homeLink.querySelector("div.flex.items-center");
     if (!logoContainer) return;
 
+    if (logoContainer.textContent.trim() === "Home" && !logoContainer.querySelector("svg")) {
+      return;
+    }
+
     // Replace SVG logo area with plain text
     logoContainer.innerHTML = "";
 
@@ -39,12 +47,36 @@
     logoContainer.appendChild(homeText);
   }
 
+  function queueUpdateNav() {
+    if (updateQueued) return;
+
+    updateQueued = true;
+    requestAnimationFrame(updateNav);
+  }
+
   updateNav();
 
   // Handles apps that re-render the nav dynamically
-  const observer = new MutationObserver(updateNav);
+  const observer = new MutationObserver(queueUpdateNav);
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true
   });
+
+  const originalPushState = history.pushState;
+  history.pushState = function (...args) {
+    const result = originalPushState.apply(this, args);
+    queueUpdateNav();
+    return result;
+  };
+
+  const originalReplaceState = history.replaceState;
+  history.replaceState = function (...args) {
+    const result = originalReplaceState.apply(this, args);
+    queueUpdateNav();
+    return result;
+  };
+
+  window.addEventListener("popstate", queueUpdateNav);
+  window.addEventListener("pageshow", queueUpdateNav);
 })();
