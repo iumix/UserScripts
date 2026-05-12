@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @description  Automatically removes common spoiler blur/overlay effects as the page updates.
 // @author       iumix
-// @version      1.0.1
+// @version      1.2.0
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/DisableThreadsSpoiler.user.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/DisableThreadsSpoiler.user.js
 // @match        https://www.threads.com/*
@@ -14,51 +14,82 @@
 (() => {
     "use strict";
 
-    function unblurSpoilers(root = document) {
+    function isSpoilerLabel(span) {
+        return span.textContent?.trim().toLowerCase() === "spoiler";
+    }
+
+    function unblurTextSpoilers(root = document) {
+        root.querySelectorAll?.("span").forEach((span) => {
+            const parent = span.parentElement;
+            if (parent && parent.tagName === "DIV") parent.style.opacity = "1";
+        });
+    }
+
+    function findMediaRevealTrigger(labelSpan) {
+        let current = labelSpan;
+        for (let depth = 0; current && depth < 12; depth += 1) {
+            if (
+                current instanceof HTMLElement &&
+                (current.tagName === "BUTTON" ||
+                    current.getAttribute("role") === "button") &&
+                current.querySelector("img, video, picture")
+            ) {
+                return current;
+            }
+            current = current.parentElement;
+        }
+        return null;
+    }
+
+    function revealMediaSpoilersByClick(root = document) {
+        const now = Date.now();
+        root.querySelectorAll?.("span").forEach((span) => {
+            if (!isSpoilerLabel(span)) return;
+
+            const trigger = findMediaRevealTrigger(span);
+            if (!trigger) return;
+
+            const lastClickTs = Number(trigger.dataset.threadsUnspoilerLastClickTs || 0);
+            if (now - lastClickTs < 1000) return;
+
+            trigger.dataset.threadsUnspoilerLastClickTs = String(now);
+            trigger.click();
+        });
+    }
+
+    function processSpoilers(root = document) {
         try {
-            root.querySelectorAll?.("span").forEach((s) => {
-                const p = s.parentElement;
-                if (p && p.tagName === "DIV") p.style.opacity = "1";
-            });
-
-            root.querySelectorAll?.("img").forEach((img) => {
-                const hasFilter =
-                    img.style.filter ||
-                    img.style.webkitFilter ||
-                    getComputedStyle(img).filter !== "none";
-
-                if (hasFilter) {
-                    img.style.webkitFilter = "none";
-                    img.style.filter = "none";
-                    img.style.transform = "none";
-                    img.style.border = "3px solid #FFFF00";
-                }
-            });
-
-            root.querySelectorAll?.("div > picture").forEach((pic) => {
-                const div = pic.parentElement;
-                const span = div?.querySelector("span");
-                if (span) span.remove();
-            });
+            unblurTextSpoilers(root);
+            revealMediaSpoilersByClick(root);
         } catch (e) { }
     }
 
     let scheduled = false;
-    function scheduleRun(targetNode) {
+    function scheduleRun() {
         if (scheduled) return;
         scheduled = true;
 
         requestAnimationFrame(() => {
             scheduled = false;
-            unblurSpoilers(document);
+            processSpoilers(document);
         });
     }
 
-    unblurSpoilers(document);
+    processSpoilers(document);
     if (document.readyState === "loading") {
         document.addEventListener(
             "DOMContentLoaded",
-            () => unblurSpoilers(document),
+            () => processSpoilers(document),
+            { once: true },
+        );
+    }
+
+    if (document.readyState === "complete") {
+        setTimeout(() => processSpoilers(document), 200);
+    } else {
+        window.addEventListener(
+            "load",
+            () => processSpoilers(document),
             { once: true },
         );
     }
@@ -69,11 +100,11 @@
                 m.type === "childList" &&
                 (m.addedNodes?.length || m.removedNodes?.length)
             ) {
-                scheduleRun(m.target);
+                scheduleRun();
                 break;
             }
             if (m.type === "attributes") {
-                scheduleRun(m.target);
+                scheduleRun();
                 break;
             }
         }
