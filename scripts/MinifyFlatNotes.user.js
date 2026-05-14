@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Replace Flatnotes Logo with Home
+// @name         Minify FlatNotes
 // @namespace    https://flatnotes.iumix.me/*
-// @version      1.1.0
+// @version      1.2.0
 // @description  Removes unecessary logo and margins
 // @include      *flatnotes*
 // @run-at       document-idle
@@ -25,6 +25,15 @@
     // Remove mb-2 class
     nav.classList.remove("mb-2");
     nav.classList.remove("md:mb-12");
+
+    // Add logout button to the existing right-side nav container
+    const buttonsContainer = nav.querySelector("div.flex.grow.items-start.justify-end");
+    if (buttonsContainer && !buttonsContainer.querySelector('a[href="/cdn-cgi/access/logout"]')) {
+      const logoutHtml = `<a href="/cdn-cgi/access/logout" class=""><button class="text-nowrap rounded px-2 py-1 bg-theme-background text-theme-text-muted hover:bg-theme-background-elevated ml-1"><div class="flex items-center"><svg data-v-e89afe9b="" width="1.25em" height="1.25em" viewBox="0 0 24 24" class="mr-1" style="--sx: 1; --sy: 1; --r: 0deg;"><path data-v-e89afe9b="" d="M16,17V14H9V10H16V7L21,12L16,17M4,3H12A1,1 0 0,1 13,4V8H11V5H5V19H11V16H13V20A1,1 0 0,1 12,21H4A1,1 0 0,1 3,20V4A1,1 0 0,1 4,3Z"></path></svg><span>Logout</span></div></button></a>`;
+      const template = document.createElement("template");
+      template.innerHTML = logoutHtml.trim();
+      buttonsContainer.appendChild(template.content.firstChild);
+    }
 
     // Find the home link
     const homeLink = nav.querySelector('a[href="/"]');
