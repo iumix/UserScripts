@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      2.0.0
+// @version      2.0.1
 // @description  Override share menu and covert link to use fixupx
 // @author       iumix
 // @match        https://x.com/*
@@ -73,7 +73,9 @@
                                     e.clipboardData.setData('text/plain', rewritten);
                                     e.preventDefault();
                                 }
-                            } catch { console.error(`${logPrefix} Failed to set clipboard data`, e); };
+                            } catch (e) {
+                                console.error(`${logPrefix} Failed to set clipboard data`, e);
+                            };
                         };
                         document.addEventListener('copy', handler, true);
                         try {
@@ -83,7 +85,9 @@
                         }
                     }
                 }
-            } catch { console.error(`${logPrefix} Failed to override clipboard`, e); }
+            } catch (e) {
+                console.error(`${logPrefix} Failed to override clipboard`, e);
+            }
 
             return orig(commandId, showUI, value);
         };
