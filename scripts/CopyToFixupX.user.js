@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://tampermonkey.net/
-// @version      1.3.0
-// @description  Copy to use Fixup X Links
+// @version      2.0.0
+// @description  Override share menu and covert link to use fixupx
 // @author       iumix
 // @match        https://x.com/*
 // @match        https://twitter.com/*
@@ -22,6 +22,12 @@
     const hostsPattern = allowedHosts.map(h => h.replace(/\./g, '\\.')).join('|');
     const wholeMatch = new RegExp(`^(?:https?:\\/\\/)?(?:${hostsPattern})\\/.*`, 'i');
 
+    const targetActionTexts = [
+        'リンクをコピー',
+        'Copy link',
+        '複製連結'
+    ];
+
     function rewriteToFixup(text) {
         const input = String(text || '').trim();
         if (!input) return null;
@@ -35,51 +41,86 @@
             const dst = new URL(replaceHost);
             dst.pathname = src.pathname;
 
-            console.log(`${logPrefix} ${dst.href}`);
+            console.log(`${logPrefix} Rewritten to: ${dst.href}`);
             return dst.href;
         } catch {
             return null;
         }
     }
 
-    const orig = document.execCommand?.bind(document);
-    if (!orig) {
-        console.warn(`${logPrefix} document.execCommand not available`);
-        return;
-    }
-
-    let installed = false;
-    document.execCommand = function (commandId, showUI, value) {
-        if (!installed) {
-            installed = true;
-            console.log(`${logPrefix} Hook installed`);
+    function overrideClipboard() {
+        const orig = document.execCommand?.bind(document);
+        if (!orig) {
+            console.warn(`${logPrefix} document.execCommand not available`);
+            return;
         }
 
-        try {
-            if (String(commandId).toLowerCase() === 'copy') {
-                const selectedText = (window.getSelection && window.getSelection().toString()) || '';
-                const rewritten = rewriteToFixup(selectedText);
-                if (rewritten) {
-                    const handler = (e) => {
+        let installed = false;
+        document.execCommand = function (commandId, showUI, value) {
+            if (!installed) {
+                installed = true;
+                console.log(`${logPrefix} Hook installed`);
+            }
+
+            try {
+                if (String(commandId).toLowerCase() === 'copy') {
+                    const selectedText = (window.getSelection && window.getSelection().toString()) || '';
+                    const rewritten = rewriteToFixup(selectedText);
+                    if (rewritten) {
+                        const handler = (e) => {
+                            try {
+                                if (e && e.clipboardData) {
+                                    e.clipboardData.setData('text/plain', rewritten);
+                                    e.preventDefault();
+                                }
+                            } catch { console.error(`${logPrefix} Failed to set clipboard data`, e); };
+                        };
+                        document.addEventListener('copy', handler, true);
                         try {
-                            if (e && e.clipboardData) {
-                                e.clipboardData.setData('text/plain', rewritten);
-                                e.preventDefault();
-                            }
-                        } catch { /* ignore */ }
-                    };
-                    document.addEventListener('copy', handler, true);
-                    try {
-                        return orig('copy');
-                    } finally {
-                        document.removeEventListener('copy', handler, true);
+                            return orig('copy');
+                        } finally {
+                            document.removeEventListener('copy', handler, true);
+                        }
                     }
                 }
+            } catch { console.error(`${logPrefix} Failed to override clipboard`, e); }
+
+            return orig(commandId, showUI, value);
+        };
+    }
+
+
+    function autoClickCopyLink() {
+        const menuItems = document.querySelectorAll('[role="menuitem"]:not([data-script-clicked="true"])');
+
+        menuItems.forEach(item => {
+            if (targetActionTexts.some(text => (item.textContent || '').includes(text))) {
+                item.setAttribute('data-script-clicked', 'true');
+                const menuContainer = item.closest('[role="menu"]');
+                if (menuContainer) {
+                    menuContainer.style.opacity = '0';
+                }
+                item.click();
+                console.log(`${logPrefix} Auto-clicked copy button`);
             }
-        } catch { /* ignore */ }
+        });
+    }
 
-        return orig(commandId, showUI, value);
-    };
+    if (document.body) {
+        initObserver();
+        overrideClipboard();
+    } else {
+        document.addEventListener('DOMContentLoaded', initObserver);
+        document.addEventListener('DOMContentLoaded', overrideClipboard);
+    }
 
-    console.log(`${logPrefix} Script loaded`);
+    function initObserver() {
+        const observer = new MutationObserver(autoClickCopyLink);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    console.log(`${logPrefix} Script fully loaded`);
 })();
