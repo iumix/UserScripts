@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
-// @namespace    http://tampermonkey.net/
-// @version      2.0.1
+// @namespace    http://iumix.me
+// @version      2.0.2
 // @description  Override share menu and covert link to use fixupx
 // @author       iumix
 // @match        https://x.com/*
