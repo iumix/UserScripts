@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Copy to use Fixup X Links
 // @namespace    http://iumix.me
-// @version      2.0.2
+// @version      2.0.3
 // @description  Override share menu and covert link to use fixupx
 // @author       iumix
 // @match        https://x.com/*
@@ -93,21 +93,26 @@
         };
     }
 
-
     function autoClickCopyLink() {
-        const menuItems = document.querySelectorAll('[role="menuitem"]:not([data-script-clicked="true"])');
+        if (document.querySelector('button[data-testid="userActions"][aria-expanded="true"]')) {
+            return;
+        }
 
-        menuItems.forEach(item => {
-            if (targetActionTexts.some(text => (item.textContent || '').includes(text))) {
-                item.setAttribute('data-script-clicked', 'true');
-                const menuContainer = item.closest('[role="menu"]');
-                if (menuContainer) {
-                    menuContainer.style.opacity = '0';
-                }
-                item.click();
-                console.log(`${logPrefix} Auto-clicked copy button`);
+        const menuItems = document.querySelectorAll('[role="menuitem"]:not([data-script-clicked])');
+
+        for (const item of menuItems) {
+            const isMatch = targetActionTexts.some(text => item.textContent?.includes(text));
+            if (!isMatch) continue;
+            item.dataset.scriptClicked = 'true';
+
+            const menu = item.closest('[role="menu"]');
+            if (menu) {
+              menu.style.opacity = '0';
             }
-        });
+
+            item.click();
+            console.log(`${logPrefix} Auto-clicked copy button`);
+        }
     }
 
     if (document.body) {
