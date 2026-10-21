@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @description  Force Twitter to load images in the highest quality available
 // @author       iumix
-// @version      1.0.0
+// @version      1.1.0
 // @downloadURL  https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/ForceTwitterImageHighQuality.user.js
 // @updateURL    https://raw.githubusercontent.com/iumix/UserScripts/main/scripts/ForceTwitterImageHighQuality.user.js
 // @match        https://pbs.twimg.com/media/*
@@ -14,8 +14,8 @@
 (function () {
     const url = new URL(window.location.href);
 
-    if (url.searchParams.get("name") !== "4096x4096") {
-        url.searchParams.set("name", "4096x4096");
+    if (url.searchParams.get("name") !== "orig") {
+        url.searchParams.set("name", "orig");
         window.location.replace(url.toString());
     }
 })();
